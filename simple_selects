@@ -1,0 +1,51 @@
+SELECT sum(Koszty) as Suma_koszty, sum(Wartość_zlecenia) as Suma_wartości_zleceń, sum( Wartość_zlecenia - Koszty) as Bilas_zlecenia
+FROM `team5`.`Zlecenia` 
+LIMIT 1000;
+
+
+Select sum((round(( UNIX_TIMESTAMP(p.Koniec_zatrudnienia) -
+         UNIX_TIMESTAMP('2020-01-01') ) / 2592000,1) * p.Pensja)) as Wynagrodzenie1
+from Pracownicy as p
+WHERE p.Koniec_zatrudnienia >= '2020-01-01' and  p.Koniec_zatrudnienia <> '9999-12-31';
+
+Select sum((round(( UNIX_TIMESTAMP('2021-02-16') -
+         UNIX_TIMESTAMP('2020-01-01') ) / 2592000,1) * p.Pensja)) as Wynagrodzenie2
+from Pracownicy as p
+WHERE  p.Koniec_zatrudnienia = '9999-12-31' and p.Data_zatrudnienia < '2020-01-01';
+
+
+Select sum((round(( UNIX_TIMESTAMP('2021-02-16') -
+         UNIX_TIMESTAMP(p.Data_zatrudnienia) ) / 2592000,1)* p.Pensja)) as Wynagrodzenie3
+from Pracownicy as p
+WHERE  p.Koniec_zatrudnienia = '9999-12-31' and p.Data_zatrudnienia >= '2020-01-01';
+
+
+
+
+
+
+
+SELECT k.Imie_i_nazwisko, z.Data_otrzymania_zlecenia, z.Data_rozpoczęcia,round(( UNIX_TIMESTAMP(z.Data_rozpoczęcia) -
+         UNIX_TIMESTAMP(z.Data_otrzymania_zlecenia) ) / 86400)  AS Liczba_dni_oczekiwania
+  FROM Zlecenia as z
+join Klienci as k
+on k.ID_klienta = z.ID_klienta
+order by Liczba_dni_oczekiwania desc
+limit 10
+
+
+SELECT ID_zlecenia,  Zakres_prac, round(( UNIX_TIMESTAMP(Data_zakończenia) -
+         UNIX_TIMESTAMP(Data_rozpoczęcia) ) / 86400) as Czas
+FROM `team5`.`Zlecenia` 
+order by Czas DESC
+LIMIT 5;
+
+
+
+SELECT k.ID_klienta, k.Imie_i_nazwisko, sum(z.Wartość_zlecenia) as Łączna_zapłata
+FROM `team5`.`Klienci` as k
+join Zlecenia as z
+on k.ID_klienta = z.ID_klienta
+group by z.ID_klienta
+order by Łączna_zapłata DESC
+
